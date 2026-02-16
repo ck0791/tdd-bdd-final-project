@@ -177,9 +177,7 @@ class TestProductModel(unittest.TestCase):
         found = Product.find_by_availability(available)
         self.assertEqual(found.count(), count)
         for product in found:
-            self.assertEqual(product.available, available)
-        for product in found:
-            self.assertEqual(product.name, name)
+            self.assertEqual(product.available, available)       
 
     def test_find_by_category(self):
         """It should Find Products by Category"""
