@@ -97,14 +97,46 @@ def step_impl(context, element_name):
     element.send_keys(context.clipboard)
 
 ##################################################################
-# This code works because of the following naming convention:
-# The buttons have an id in the html hat is the button text
-# in lowercase followed by '-btn' so the Clean button has an id of
-# id='clear-btn'. That allows us to lowercase the name and add '-btn'
-# to get the element id of any button
+# Button click step
 ##################################################################
+@when('I press the "{button}" button')
+def step_impl(context, button):
+    button_id = button.lower() + '-btn'
+    context.driver.find_element(By.ID, button_id).click()
 
-## UPDATE CODE HERE ##
+##################################################################
+# Verify for a specific name or text to be present in results
+##################################################################
+@then('I should see "{name}" in the results')
+def step_impl(context, name):
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'search_results'),
+            name
+        )
+    )
+    assert(found)
+
+##################################################################
+# Verify for a specific name or text to NOT be present in results
+##################################################################
+@then('I should not see "{name}" in the results')
+def step_impl(context, name):
+    element = context.driver.find_element(By.ID, 'search_results')
+    assert(name not in element.text)
+
+##################################################################
+# Verify that a specific message is present
+##################################################################
+@then('I should see the message "{message}"')
+def step_impl(context, message):
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'flash_message'),
+            message
+        )
+    )
+    assert(found)
 
 ##################################################################
 # This code works because of the following naming convention:
@@ -129,6 +161,9 @@ def step_impl(context, element_name, text_string):
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
     element = WebDriverWait(context.driver, context.wait_seconds).until(
         expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    element.clear()
+    element.send_keys(text_string)
     )
     element.clear()
     element.send_keys(text_string)
