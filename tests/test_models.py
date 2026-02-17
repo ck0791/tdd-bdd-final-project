@@ -101,9 +101,6 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(new_product.available, product.available)
         self.assertEqual(new_product.category, product.category)
 
-    #
-    # ADD YOUR TEST CASES HERE
-    #
     def test_read_a_product(self):
         """It should Read a Product"""
         product = ProductFactory()
@@ -123,14 +120,13 @@ class TestProductModel(unittest.TestCase):
         product.id = None
         product.create()
         self.assertIsNotNone(product.id)
-        # Change it an save it
+        # Change it and save it
         product.description = "testing"
         original_id = product.id
         product.update()
         self.assertEqual(product.id, original_id)
         self.assertEqual(product.description, "testing")
-        # Fetch it back and make sure the id hasn't changed
-        # but the data did change
+        # Fetch it back and make sure the id hasn't changed but the data did
         products = Product.all()
         self.assertEqual(len(products), 1)
         self.assertEqual(products[0].id, original_id)
@@ -141,7 +137,7 @@ class TestProductModel(unittest.TestCase):
         product = ProductFactory()
         product.create()
         self.assertEqual(len(Product.all()), 1)
-        # delete the product and make sure it isn't in the database
+        # Delete the product and make sure it isn't in the database
         product.delete()
         self.assertEqual(len(Product.all()), 0)
 
@@ -166,6 +162,8 @@ class TestProductModel(unittest.TestCase):
         count = len([product for product in products if product.name == name])
         found = Product.find_by_name(name)
         self.assertEqual(found.count(), count)
+        for product in found:
+            self.assertEqual(product.name, name)
 
     def test_find_by_availability(self):
         """It should Find Products by Availability"""
@@ -177,7 +175,7 @@ class TestProductModel(unittest.TestCase):
         found = Product.find_by_availability(available)
         self.assertEqual(found.count(), count)
         for product in found:
-            self.assertEqual(product.available, available)       
+            self.assertEqual(product.available, available)
 
     def test_find_by_category(self):
         """It should Find Products by Category"""
@@ -190,5 +188,3 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found.count(), count)
         for product in found:
             self.assertEqual(product.category, category)
-
-    
